@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class UserRegistration {
-    public static void registrationDetails() throws SQLException {
+    public static void registrationDetails(){
         User user=new User();
         Scanner sc=new Scanner(System.in);
         System.out.println("Enter the first name ");
@@ -48,7 +48,7 @@ public class UserRegistration {
         }
     }
 
-    public static void  saveStudentInformation(User user) throws SQLException {
+    public static void  saveStudentInformation(User user){
          createUserTable();
         try {  //making DB connection
             Connection connection =ConnectionString.getConnection();
@@ -69,25 +69,31 @@ public class UserRegistration {
         }
     }
 
-    public static void createUserTable() throws SQLException {
+    public static void createUserTable(){
 
-        Connection connection =ConnectionString.getConnection();
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS userDetails ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY ,"
-                + "firstName VARCHAR(100) ,"
-                + "lastName VARCHAR(100) ,"
-                + "userName VARCHAR(100) ,"
-                + "password VARCHAR(100) ,"
-                + "city VARCHAR(100) ,"
-                + "mailId VARCHAR(100) ,"
-                + "mobileNo BIGINT,"
-                + "createdDate DATE"
-                + ")";
+        Connection connection = null;
+        try {
+            connection = ConnectionString.getConnection();
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS userDetails ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY ,"
+                    + "firstName VARCHAR(100) ,"
+                    + "lastName VARCHAR(100) ,"
+                    + "userName VARCHAR(100) ,"
+                    + "password VARCHAR(100) ,"
+                    + "city VARCHAR(100) ,"
+                    + "mailId VARCHAR(100) ,"
+                    + "mobileNo BIGINT,"
+                    + "createdDate DATE"
+                    + ")";
 
-        PreparedStatement ps=connection.prepareStatement(createTableSQL);
-        ps.execute();
-        ps.close();
-        connection.close();
+            PreparedStatement ps=connection.prepareStatement(createTableSQL);
+            ps.execute();
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 public static void studentLogin(){
@@ -103,8 +109,7 @@ public static void studentLogin(){
         ps.setString(2, password);
         ResultSet rs = ps.executeQuery();
         if(!rs.isBeforeFirst()){
-            System.out.println("Invalid Username or Password.");
-            Main.homepage();
+            throw new CustomQuizException("Invalid Username or Password.");
         }else{
             System.out.println("Account logged-in Successfully.");
             System.out.println("Do you want to start Quiz(Y/N)?");
@@ -119,14 +124,16 @@ public static void studentLogin(){
                Main.homepage();
             }
             }
-
-
         connection.close();
-    } catch (SQLException e) {
+    }catch (CustomQuizException ce){
+        System.out.println("Custom Exception: "+ce.getMessage());
+        Main.homepage();
+    }
+    catch (SQLException e) {
         throw new RuntimeException(e);
     }
 }
-     public static void adminLogin() throws SQLException {
+     public static void adminLogin(){
         Scanner sc=new Scanner(System.in);
          System.out.println("Enter Admin username");
           String username=sc.next();
@@ -138,6 +145,7 @@ public static void studentLogin(){
              System.out.println("Enter 1: Display all students score.");
              System.out.println("Enter 2: Fetch student score by using id");
              System.out.println("Enter 3: Add question with 4 options into database");
+             System.out.println("Enter 4: Go to Homepage");
              int choice=sc.nextInt();
 
              switch (choice){
@@ -152,9 +160,16 @@ public static void studentLogin(){
                      Main.homepage();
                      break;
                  case 3:
+                     QuizQuestions.addQuestionSet();
+                     System.out.println("Question added successfully...!");
+                     Main.homepage();
+                     break;
+                 case 4:
+                     Main.homepage();
                      break;
              }
          } else{
+             System.out.println("Invalid Admin credential,Please try again.");
              Main.homepage();
          }
      }
