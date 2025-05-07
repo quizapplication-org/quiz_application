@@ -50,7 +50,7 @@ public class UserRegistration {
 
     public static void  saveStudentInformation(User user) throws SQLException {
          createUserTable();
-        try {
+        try {  //making DB connection
             Connection connection =ConnectionString.getConnection();
             PreparedStatement ps=connection.prepareStatement("insert into userDetails(firstName,lastName,userName,password,city,mailId,mobileNo) values(?,?,?,?,?,?,?)");
             ps.setString(1,user.getFirstName());
