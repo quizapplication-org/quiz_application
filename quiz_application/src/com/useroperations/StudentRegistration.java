@@ -5,14 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class StudentRegistration {
+public class StudentRegistration extends com.useroperations.CommonConnection {
 
     public static void registerStudent(String firstName, String lastName, String username, String password,
                                        String city, String mailId, long mob) {
         String insertSQL = "INSERT INTO Student_Data (first_name, last_name, username, password, city, mail_id, mobile_number) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = CommonConnection.getConnection();
+        try (Connection conn = com.useroperations.CommonConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
             pstmt.setString(1, firstName);
