@@ -11,12 +11,12 @@ public class Test {
         int choice;
 
         do {
-            System.out.println("\n------ Admin Operations ------");
+            System.out.println("\n   ****  Admin Operations  ****");
             System.out.println("1. Display all students' scores (ascending order)");
-            System.out.println("2. Fetch a student's score by ID");
+            System.out.println("2. Fetch a student's score by student ID");
             System.out.println("3. Add a question with 4 options");
             System.out.println("0. Exit");
-            System.out.print("Enter your choice: ");
+            System.out.print("\nEnter your choice: ");
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
